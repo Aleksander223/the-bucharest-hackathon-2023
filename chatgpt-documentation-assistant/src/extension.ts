@@ -1,6 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import axios from 'axios';
+import { ENDPOINT_URL } from './variables';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -27,8 +29,24 @@ export function activate(context: vscode.ExtensionContext) {
 		const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 		const highlighted = editor.document.getText(selectionRange);
 
-		// TODO: implement API endpoint call to replace the code with the commented code
-
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification
+		}, async (progress) => {
+			try {
+				progress.report({
+					message: 'Loading response...'
+				});
+				const res = await axios.post(`${ENDPOINT_URL}/HttpServer/handleCodeSnippet`, {
+					content: highlighted
+				});
+	
+				editor.edit((edit) => {
+					edit.replace(selectionRange, res.data.content);
+				});
+			} catch (error) {
+				vscode.window.showErrorMessage('Could not comment line. Please try again');
+			}
+		});
 	});
 
 	context.subscriptions.push(disposable);
