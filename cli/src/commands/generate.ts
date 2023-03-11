@@ -3,6 +3,7 @@ import ora from "ora";
 import glob from 'glob'
 import * as fs from 'fs';
 import * as path from 'path';
+import axios from "axios";
 
 export async function doGenerate(projectPath: string, docsPath: string) {
     const projectFiles = [];
@@ -10,6 +11,8 @@ export async function doGenerate(projectPath: string, docsPath: string) {
         title: string;
         path: string;
     }[] = [];
+
+    const pathSegments = path.normalize(projectPath).split(path.sep);
 
     const spinner = ora({
         color: 'cyan'
@@ -19,8 +22,6 @@ export async function doGenerate(projectPath: string, docsPath: string) {
             // Map project files
             spinner.text = 'Mapping project files';
             projectFiles.push(...await glob(`${projectPath}/**/*.ts`));
-
-            const pathSegments = path.normalize(projectPath).split(path.sep);
 
             // Map files to docs
             for (const file of projectFiles) {
@@ -64,10 +65,10 @@ export async function doGenerate(projectPath: string, docsPath: string) {
             const didIdentifier = new Set<string>(['Root']);
 
             for (const md of mdPaths) {
-                const pathSegments = path.normalize(md.path).split(path.sep).slice(0, -1);
-                const identifier = pathSegments.at(-1) ?? 'Root';
+                const mdSegments = path.normalize(md.path).split(path.sep).slice(0, -1);
+                const identifier = mdSegments.at(-1) ?? 'Root';
 
-                const tabs = '\t'.repeat(pathSegments.length);
+                const tabs = '\t'.repeat(mdSegments.length);
 
                 if (!didIdentifier.has(identifier)) {
                     didIdentifier.add(identifier);
@@ -77,6 +78,24 @@ export async function doGenerate(projectPath: string, docsPath: string) {
 
                 await fs.promises.appendFile(sidebarPath, `\t${tabs}* [${md.title}](${md.path})\n`);
             }
+        }
+        {
+            // Generate docs
+            spinner.text = 'Generating docs (this may take a while, depending on the project size. Please be patient 😄)'
+
+            for (const file of projectFiles) {
+                const content = (await fs.promises.readFile(path.resolve(file))).toString();
+
+                const res = await axios.post('https://rqlkvmd5jubx6nzu2txhid3bom0modpq.lambda-url.us-east-1.on.aws/HttpServer/handleDocumentation', {
+                    content: content
+                });
+
+                const markdownData = res.data.content;
+                const resolvedFilePath = path.normalize(file).split(path.sep).filter(x => !(pathSegments.includes(x))).join(path.sep).replace('.ts', '.md');
+                const mdPath = path.join(docsPath, resolvedFilePath);
+
+                await fs.promises.appendFile(mdPath, `\n${markdownData}`);
+            }     
         }
     } catch (error) {
         if (error instanceof Error) {
