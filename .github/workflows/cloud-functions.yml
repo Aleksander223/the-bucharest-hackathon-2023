@@ -16,8 +16,6 @@ jobs:
         with:
           genezio-version: latest
           token: ${{ secrets.GENEZIO_TOKEN }}
-      - name: Login
-        run: genezio login ${{ secrets.GENEZIO_TOKEN }}
       - name: Test genezio installation
         run: genezio ls
       # Check the project at https://app.genez.io
