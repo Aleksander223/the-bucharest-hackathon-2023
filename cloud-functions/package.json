@@ -1,0 +1,19 @@
+{
+  "name": "chat-gpt-code-assistant-cloud-functions",
+  "version": "0.1.0",
+  "description": "Server functions for ChatGPT code commenter and documentation generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aleksander223/the-bucharest-hackathon-2023.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Aleksander223/the-bucharest-hackathon-2023/issues"
+  },
+  "homepage": "https://github.com/Aleksander223/the-bucharest-hackathon-2023#readme"
+}
