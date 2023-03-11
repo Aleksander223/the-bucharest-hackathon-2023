@@ -1,0 +1,1 @@
+export const ENDPOINT_URL = 'https://rqlkvmd5jubx6nzu2txhid3bom0modpq.lambda-url.us-east-1.on.aws';
