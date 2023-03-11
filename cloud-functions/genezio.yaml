@@ -6,5 +6,6 @@ sdk:
   path: ./client/sdk/
 classes:
   - path: ./index.ts
-    type: jsonrpc
+    type: http
+    name: 'gpt-server'
     methods: []
