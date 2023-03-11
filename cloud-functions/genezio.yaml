@@ -1,0 +1,10 @@
+name: chatgpt-code-commenter-ts
+sdk:
+  language: ts
+  options:
+    runtime: node
+  path: ./client/sdk/
+classes:
+  - path: ./index.ts
+    type: jsonrpc
+    methods: []
