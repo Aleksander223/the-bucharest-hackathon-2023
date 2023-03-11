@@ -1,9 +1,18 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
+import * as fs from "fs";
 
 import { Configuration, OpenAIApi } from "openai";
 
-export class CodeCommenter {
+interface HTTPRequest {
+    http: {
+        method: string;
+        path: string;
+    };
+    body: Record<string, any>;
+}
+
+export class HttpServer {
     private readonly configuration: Configuration;
 
     constructor() {
@@ -13,18 +22,26 @@ export class CodeCommenter {
         console.log("Constructor called!");
     }
 
-    /**
-     * Method that returns a comment for a snippet of code.
-     */
-    async comment() {
+    async handleCodeSnippet(request: HTTPRequest) {
+        console.log(`Request received with simple text ${request.body}!`);
+
         const openai = new OpenAIApi(this.configuration);
+
+        const startingPrompt =
+            "Your task is to comment typescript code. You will receive just the snipper of code from now on, and you will place inline comments only where necessary to document the function. Do not add a comment on every line, only add comments where necessary, and make them inline. If the snippet of code is a function or a class definition, then you will also prepend the function with a JSDOC comment of the code.";
+
+        const codeSnippet = request.body.content;
 
         const result = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
                 {
                     role: "user",
-                    content: "Give me 5 fun party ideas",
+                    content: startingPrompt,
+                },
+                {
+                    role: "user",
+                    content: codeSnippet,
                 },
             ],
         });
@@ -33,13 +50,12 @@ export class CodeCommenter {
 
         console.log(returnedMsg);
 
-        return returnedMsg;
-    }
-
-    /**
-     * Method that returns a markdown documentation for a snippet of code
-     */
-    document() {
-        return "Hello world!";
+        return {
+            body: {
+              content: returnedMsg?.content ?? 'ERROR'
+            },
+            headers: { "content-type": "application/json" },
+            statusCode: 200,
+        };
     }
 }
