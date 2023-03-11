@@ -19,6 +19,10 @@ jobs:
           token: ${{ secrets.GENEZIO_TOKEN }}
       - name: Test genezio installation
         run: genezio ls
+      - name: CReate envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       # Check the project at https://app.genez.io
       - name: Deploy cloud functions
         working-directory: ./cloud-functions
