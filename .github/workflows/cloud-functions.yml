@@ -1,0 +1,29 @@
+name: cloud functions workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    environment: all
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: Genez-io/genezio-github-action@main
+        with:
+          genezio-version: latest
+          token: ${{ secrets.GENEZIO_TOKEN }}
+      - name: Test genezio installation
+        run: genezio ls
+      - name: CReate envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      # Check the project at https://app.genez.io
+      - name: Deploy cloud functions
+        working-directory: ./cloud-functions
+        run: npm i && genezio deploy
