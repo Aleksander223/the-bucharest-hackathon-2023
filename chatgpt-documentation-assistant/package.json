@@ -1,8 +1,8 @@
 {
   "name": "chatgpt-documentation-assistant",
-  "displayName": "chatgpt-documentation-assistant",
-  "description": "",
-  "version": "0.0.1",
+  "displayName": "ChatGPT Docs Assistant",
+  "description": "Comment your code with the power of ChatGPT!",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.76.0"
   },
