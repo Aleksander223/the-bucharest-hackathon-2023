@@ -14,10 +14,24 @@
   "contributes": {
     "commands": [
       {
-        "command": "chatgpt-documentation-assistant.helloWorld",
-        "title": "Hello World"
+        "command": "chatgpt-documentation-assistant.commentCode",
+        "title": "Comment code"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "chatgpt-documentation-assistant.commentCode",
+          "when": "editorHasSelection" 
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "chatgpt-documentation-assistant.commentCode",
+          "when": "false"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
