@@ -2,6 +2,8 @@
 
 [![Cloud functions](https://github.com/Aleksander223/the-bucharest-hackathon-2023/actions/workflows/cloud-functions.yml/badge.svg)](https://github.com/Aleksander223/the-bucharest-hackathon-2023/actions/workflows/cloud-functions.yml)
 
+[Official docs](https://aleksander223.github.io/the-bucharest-hackathon-2023/#/)
+
 # DevDoc
 
 > Simplify your documentation process with DevDoc
